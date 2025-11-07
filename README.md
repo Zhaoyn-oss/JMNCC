@@ -75,3 +75,4 @@ install.packages("devtools")
 devtools::install_github("Zhaoyn-oss/JMNCC")
 ```
 
+# JMNCC
