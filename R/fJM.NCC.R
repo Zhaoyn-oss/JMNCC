@@ -1,17 +1,34 @@
 #' fJM-NCC: Likelihood inference with full maximum likelihood approach
 #'
-#' The fJM-NCC method incorporates all observed data and survival outcome, traeating the unobserved
+#' The fJM-NCC method incorporates all observed data and survival outcome, treating the unobserved
 #' longitudinal outcomes as missing at random. The longitudinal sub-model must be a
 #' generalized linear mixed-effects model (`lmerMod` or `glmerMod`) and the survival sub-model can
 #' be a Cox model (`coxph`) .
 #'
 #' @param obsObject An `lmerMod` or `glmerMod` object (longitudinal sub-model).
-#' @param survObject A `coxph` object (survival sub-model).
+#' @param survObject An object inheriting from class \code{coxph} or class \code{survreg}. In the call to \code{coxph()}
+#' or \code{survreg()}, you need to specify the argument \code{x = TRUE} such that the design matrix is contained in the object fit. See \bold{Examples}..
 #' @param timeVar Character string for the time variable in the longitudinal data.
 #' @param deltaVar Character string for the event indicator column in `interFact$data`, 0 representing control, k=1, 2... representing competing event k.
 #' @param CompRisk Logical, whether to include competing risks (default `TRUE`).
 #' @param interFact List with `value` (formula) and `data` (data frame) for additional covariates or strata.
-#' @param control List of control parameters for quadrature points, tolerances, etc.
+#' @param control List of control parameters:
+#' #' @param control A list of control parameters with the following elements:
+#' \describe{
+#'   \item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
+#'   \item{parscale}{The \code{parscale} control argument for \code{optim()}.
+#'   It should be a numeric vector of length equal to the number of parameters.
+#'   Default is 0.01 for all parameters.}
+#'   \item{knots}{A numeric vector of the knot positions for the piecewise-constant baseline risk function.}
+#'   \item{ObsTimes.knots}{Logical; if \code{TRUE} (default), the positions of the knots are specified
+#'   based on the observed event times; otherwise, they are based only on the true event times.}
+#'   \item{Q}{The number of internal knots, 4 default.}
+#'   \item{GHk}{The number of Gauss–Hermite quadrature points used to approximate the integrals over the random effects.
+#'   The default is 15 for one-, two-, or three-dimensional integration when \eqn{N < 2000}, and 9 otherwise,
+#'   for the simple Gauss–Hermite rule.}
+#'   \item{GKk}{The number of Gauss–Kronrod points used to approximate the integral involved in the calculation
+#'   of the survival function. Two options are available: 7 (default) or 15.}
+#' }
 #'
 #' @return A list of class `"JM.NCC"` with estimated coefficients, variance components, Hessian matrix, and other elements.
 #'
@@ -200,9 +217,7 @@ fJM.NCC <- function(obsObject, survObject, timeVar, deltaVar,
   obsdata <- list(y=y.long, X=X, Z=Z)
   surdata <- list(X2=X2[!duplicated(idT), ,drop=FALSE], delta=delta, nRisks=nRisks)
 
-  con <- list(iter.qN = 350, optimizer = "optim", grad.function=TRUE, tol1 = 1e-03, tol2 = 1e-04,
-              tol3 = if (!CompRisk) sqrt(.Machine$double.eps) else 1e-09, numeriDeriv = "fd", eps.Hes = 1e-06,
-              parscale = NULL, knots = NULL, ObsTimes.knots = TRUE,
+  con <- list(iter.qN = 350, parscale = NULL, knots = NULL, ObsTimes.knots = TRUE,
               Q = 3, GHk = if (ncol(Z) < 3 && nrow(Z) < 2000) 15 else 9,
               GKk = 7, verbose = FALSE)
   con[(namc <- names(control))] <- control

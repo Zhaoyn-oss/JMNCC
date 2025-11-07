@@ -12,7 +12,23 @@
 #' @param weightsVar Character string for subject-level weights column in `interFact$data`.
 #' @param CompRisk Logical, whether to include competing risks (default `TRUE`).
 #' @param interFact List with `value` (formula) and `data` (data frame) for additional covariates or strata.
-#' @param control List of control parameters for quadrature points, tolerances, etc.
+#' @param control List of control parameters:
+#' #' @param control A list of control parameters with the following elements:
+#' \describe{
+#'   \item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
+#'   \item{parscale}{The \code{parscale} control argument for \code{optim()}.
+#'   It should be a numeric vector of length equal to the number of parameters.
+#'   Default is 0.01 for all parameters.}
+#'   \item{knots}{A numeric vector of the knot positions for the piecewise-constant baseline risk function.}
+#'   \item{ObsTimes.knots}{Logical; if \code{TRUE} (default), the positions of the knots are specified
+#'   based on the observed event times; otherwise, they are based only on the true event times.}
+#'   \item{Q}{The number of internal knots, 4 default.}
+#'   \item{GHk}{The number of Gauss–Hermite quadrature points used to approximate the integrals over the random effects.
+#'   The default is 15 for one-, two-, or three-dimensional integration when \eqn{N < 2000}, and 9 otherwise,
+#'   for the simple Gauss–Hermite rule.}
+#'   \item{GKk}{The number of Gauss–Kronrod points used to approximate the integral involved in the calculation
+#'   of the survival function. Two options are available: 7 (default) or 15.}
+#' }
 #'
 #' @return A list of class `"JM.NCC"` with estimated coefficients, variance components, Hessian matrix, and other elements.
 #'
@@ -215,10 +231,8 @@ wJM.NCC <- function(obsObject, survObject, timeVar, deltaVar, weightVar,
   obsdata <- list(y=y.long, X=X, Z=Z)
   surdata <- list(X2=X2[!duplicated(idT), ,drop=FALSE], delta=delta, weight=weight, nRisks=nRisks)
 
-  con <- list(iter.qN = 350, optimizer = "optim", tol1 = 1e-03, tol2 = 1e-04,
-              tol3 = if (!CompRisk) sqrt(.Machine$double.eps) else 1e-09, numeriDeriv = "fd", eps.Hes = 1e-06,
-              parscale = NULL, knots = NULL, ObsTimes.knots = TRUE,
-              Q = 3, GHk = if (ncol(Z) < 3 && nrow(Z) < 2000) 15 else 9,
+  con <- list(iter.qN = 350, parscale = NULL, knots = NULL, ObsTimes.knots = TRUE,
+              Q = 4, GHk = if (ncol(Z) < 3 && nrow(Z) < 2000) 15 else 9,
               GKk = 7, verbose = FALSE)
   con[(namc <- names(control))] <- control
   con$family <- fam
