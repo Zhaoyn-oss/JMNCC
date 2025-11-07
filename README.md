@@ -2,12 +2,6 @@
 ## Description
 **JMNCC** is an R implementation of a joint modeling framework for **longitudinal biomarkers** and **survival outcomes** in the presenece of **competing risks** under a **nested case-control (NCC) design**.
 
-This framework integrates:
-- Piecewise-constant baseline hazards for each competing event,
-- Random effects for longitudinal trahectories,
-- Gauss-Hermite quadrature for integrating random effects, and
-- Gauss-Kronrod quadrature for approximating time-to-event likelihood contributions.
-
 This package provides two complementary estimation strategies:
 1. **fJM-NCC** - Full likelihood-based inference using all observed longitudinal data and survival outcome, treating the unobserved longitudinal measurements as missing at random.
 2. **wJM-NCC** - Inverse probability weighting likelihood-based inference using only data from NCC sub-cohort, accounting for the potential selection bias in the NCC sampling.
