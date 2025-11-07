@@ -1,0 +1,22 @@
+Package: JMNCC
+Title: Joint Modeling of Longitudinal Biomarker and Survival Outcomes with Competing Risks in NCC Studies
+Version: 0.1.0
+Authors@R: 
+    person("Yanan", "Zhao", , "yanan.zhao@nyulangone.org", role = c("aut", "cre"))
+Description: Implements joint models for longitudinal biomarkers and survival outcomes with competing risks under a nested case-control (NCC) design. 
+License: GPL
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends: R (>= 4.2.0)
+Imports:
+    mvtnorm,
+    numDeriv,
+    statmod,
+    survival,
+    lme4,
+    mvQuad,
+    dplyr,
+    tidyr,
+    JM
+LazyData: true
