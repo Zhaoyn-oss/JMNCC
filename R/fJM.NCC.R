@@ -13,9 +13,10 @@
 #' @param CompRisk Logical, whether to include competing risks (default `TRUE`).
 #' @param interFact List with `value` (formula) and `data` (data frame) for additional covariates or strata.
 #' @param control List of control parameters:
-#' #' @param control A list of control parameters with the following elements:
+#' @param control A list of control parameters with the following elements:
 #' \describe{
 #'   \item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
+#'   \item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}. Default is \code{sqrt(.Machine$double.eps)}.}
 #'   \item{parscale}{The \code{parscale} control argument for \code{optim()}.
 #'   It should be a numeric vector of length equal to the number of parameters.
 #'   Default is 0.01 for all parameters.}
@@ -217,7 +218,8 @@ fJM.NCC <- function(obsObject, survObject, timeVar, deltaVar,
   obsdata <- list(y=y.long, X=X, Z=Z)
   surdata <- list(X2=X2[!duplicated(idT), ,drop=FALSE], delta=delta, nRisks=nRisks)
 
-  con <- list(iter.qN = 350, parscale = NULL, knots = NULL, ObsTimes.knots = TRUE,
+  con <- list(iter.qN = 300, tol = if (!CompRisk) sqrt(.Machine$double.eps) else 1e-09,
+              parscale = NULL, knots = NULL, ObsTimes.knots = TRUE,
               Q = 3, GHk = if (ncol(Z) < 3 && nrow(Z) < 2000) 15 else 9,
               GKk = 7, verbose = FALSE)
   con[(namc <- names(control))] <- control
@@ -247,7 +249,7 @@ fJM.NCC <- function(obsObject, survObject, timeVar, deltaVar,
   Lo <- Tiq[, 1:Q]
   Up <- Tiq[, 2:(Q+1)]
   P <- (Up - Lo) / 2
-  P[P < con$tol3] <- as.numeric(NA)
+  P[P < con$tol] <- as.numeric(NA)
   P1 <- (Up + Lo) / 2
 
   #-----------------------GK notes and weights----------------------
