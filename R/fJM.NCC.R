@@ -14,11 +14,10 @@
 #' 0 representing control, k=1, 2... representing competing event k.
 #' @param CompRisk Logical, whether to include competing risks (default `TRUE`).
 #' @param interFact List with `value` (formula) and `data` (data frame) for additional covariates or strata.
-#' @param control List of control parameters:
 #' @param control A list of control parameters with the following elements:
 #' \describe{
 #'   \item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
-#'   \item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}.
+#'   \item{tol}{tolerance value for convergence in the log-likelihood.
 #'    Default is \code{sqrt(.Machine$double.eps)}.}
 #'   \item{parscale}{The \code{parscale} control argument for \code{optim()}.
 #'   It should be a numeric vector of length equal to the number of parameters.

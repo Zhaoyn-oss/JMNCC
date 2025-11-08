@@ -25,6 +25,8 @@ wJM.NCC(
 \item{deltaVar}{Character string for the event indicator column in \code{interFact$data},
 0 representing control, k=1, 2... representing competing event k.}
 
+\item{weightVar}{Character string for subject-level weights column in \code{interFact$data}.}
+
 \item{CompRisk}{Logical, whether to include competing risks (default \code{TRUE}).}
 
 \item{interFact}{List with \code{value} (formula) and \code{data} (data frame) for additional covariates or strata.}
@@ -32,7 +34,7 @@ wJM.NCC(
 \item{control}{A list of control parameters with the following elements:
 \describe{
 \item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
-\item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}.
+\item{tol}{tolerance value for convergence in the log-likelihood.
 Default is \code{sqrt(.Machine$double.eps)}.}
 \item{parscale}{The \code{parscale} control argument for \code{optim()}.
 It should be a numeric vector of length equal to the number of parameters.
@@ -47,8 +49,6 @@ for the simple Gauss–Hermite rule.}
 \item{GKk}{The number of Gauss–Kronrod points used to approximate the integral involved in the calculation
 of the survival function. Two options are available: 7 (default) or 15.}
 }}
-
-\item{weightsVar}{Character string for subject-level weights column in \code{interFact$data}.}
 }
 \value{
 A list of class \code{"JM.NCC"} with estimated coefficients, variance components, Hessian matrix, and other elements.
