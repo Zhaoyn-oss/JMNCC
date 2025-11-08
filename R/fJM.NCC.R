@@ -7,16 +7,19 @@
 #'
 #' @param obsObject An `lmerMod` or `glmerMod` object (longitudinal sub-model).
 #' @param survObject An object inheriting from class \code{coxph} or class \code{survreg}. In the call to \code{coxph()}
-#' or \code{survreg()}, you need to specify the argument \code{x = TRUE} such that the design matrix is contained in the object fit. See \bold{Examples}..
+#' or \code{survreg()}, you need to specify the argument \code{x = TRUE} such that the design matrix is
+#'  contained in the object fit. See \bold{Examples}..
 #' @param timeVar Character string for the time variable in the longitudinal data.
-#' @param deltaVar Character string for the event indicator column in `interFact$data`, 0 representing control, k=1, 2... representing competing event k.
+#' @param deltaVar Character string for the event indicator column in `interFact$data`,
+#' 0 representing control, k=1, 2... representing competing event k.
 #' @param CompRisk Logical, whether to include competing risks (default `TRUE`).
 #' @param interFact List with `value` (formula) and `data` (data frame) for additional covariates or strata.
 #' @param control List of control parameters:
 #' @param control A list of control parameters with the following elements:
 #' \describe{
 #'   \item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
-#'   \item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}. Default is \code{sqrt(.Machine$double.eps)}.}
+#'   \item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}.
+#'    Default is \code{sqrt(.Machine$double.eps)}.}
 #'   \item{parscale}{The \code{parscale} control argument for \code{optim()}.
 #'   It should be a numeric vector of length equal to the number of parameters.
 #'   Default is 0.01 for all parameters.}
@@ -50,26 +53,36 @@
 #' data(sur_full_linear)
 #'
 #' # Convert survival data to long format for competing risks
-#' full.surdata.long <- crLong(data = sur_full_linear, statusVar="event", censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
+#' full.surdata.long <- crLong(data = sur_full_linear, statusVar="event",
+#' censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
 #'
 #' # Fit Cox model
-#' survObject.full <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR), data = full.surdata.long, x = TRUE)
+#' survObject.full <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+#' data = full.surdata.long, x = TRUE)
 #'
 #' # Fit longitudinal model
-#' obsObject.full <- lmer(obs.value~sample.time+(1+sample.time|subject), data=obs_full_linear)
+#' obsObject.full <- lmer(obs.value~sample.time+(1+sample.time|subject),
+#' data=obs_full_linear)
 #'
 #' # Fit joint model
-#' res.fjm <- fJM.NCC(obsObject=obsObject.full, survObject=survObject.full, timeVar = "sample.time", deltaVar="delta", CompRisk=TRUE, interFact = list(value = ~ CR, data = full.surdata.long), control = list(Q=4))
+#' res.fjm <- fJM.NCC(obsObject=obsObject.full, survObject=survObject.full,
+#' timeVar = "sample.time", deltaVar="delta", CompRisk=TRUE,
+#' interFact = list(value = ~ CR, data = full.surdata.long), control = list(Q=4))
 #'
 #'
 #' # load example data for Poisson generalized linear mixed-effects model
 #' data(obs_full_poisson)
 #' data(sur_full_poisson)
 #'
-#' obsObject.full <- glmer(obs.value~sample.time+(1+sample.time|subject), data=obs_full_poisson, family=poisson(link = "log"))
-#' full.surdata.long <- crLong(data = sur_full_poisson, statusVar="event", censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
-#' survObject.full <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR), data = full.surdata.long, x = TRUE)
-#' res.fjm <- fJM.NCC(obsObject=obsObject.full, survObject=survObject.full, timeVar = "sample.time", deltaVar="delta", CompRisk=TRUE, interFact = list(value = ~ CR, data = full.surdata.long), control = list(Q=4))
+#' obsObject.full <- glmer(obs.value~sample.time+(1+sample.time|subject),
+#' data=obs_full_poisson, family=poisson(link = "log"))
+#' full.surdata.long <- crLong(data = sur_full_poisson, statusVar="event",
+#' censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
+#' survObject.full <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+#' data = full.surdata.long, x = TRUE)
+#' res.fjm <- fJM.NCC(obsObject=obsObject.full, survObject=survObject.full,
+#' timeVar = "sample.time", deltaVar="delta", CompRisk=TRUE,
+#' interFact = list(value = ~ CR, data = full.surdata.long), control = list(Q=4))
 #'
 #' }
 #' @export

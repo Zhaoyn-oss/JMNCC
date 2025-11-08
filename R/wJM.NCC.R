@@ -8,7 +8,8 @@
 #' @param obsObject An `lmerMod` or `glmerMod` object (longitudinal sub-model).
 #' @param survObject A `coxph` object (survival sub-model).
 #' @param timeVar Character string for the time variable in the longitudinal data.
-#' @param deltaVar Character string for the event indicator column in `interFact$data`, 0 representing control, k=1, 2... representing competing event k.
+#' @param deltaVar Character string for the event indicator column in `interFact$data`,
+#' 0 representing control, k=1, 2... representing competing event k.
 #' @param weightsVar Character string for subject-level weights column in `interFact$data`.
 #' @param CompRisk Logical, whether to include competing risks (default `TRUE`).
 #' @param interFact List with `value` (formula) and `data` (data frame) for additional covariates or strata.
@@ -16,7 +17,8 @@
 #' @param control A list of control parameters with the following elements:
 #' \describe{
 #'   \item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
-#'    \item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}. Default is \code{sqrt(.Machine$double.eps)}.}
+#'    \item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}.
+#'     Default is \code{sqrt(.Machine$double.eps)}.}
 #'   \item{parscale}{The \code{parscale} control argument for \code{optim()}.
 #'   It should be a numeric vector of length equal to the number of parameters.
 #'   Default is 0.01 for all parameters.}
@@ -53,16 +55,20 @@
 #' obs_cc_linear <- obs_full_linear[obs_full_linear$subject %in% sur_cc_linear$subject, ]
 #'
 #' # Convert survival data to long format for competing risks
-#' cc.surdata.long <- crLong(data = sur_cc_linear, statusVar="event", censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
+#' cc.surdata.long <- crLong(data = sur_cc_linear, statusVar="event",
+#' censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
 #'
 #' # Fit longitudinal model
 #' obsObject.cc <- lmer(obs.value~sample.time+(1+sample.time|subject), data=obs_cc_linear)
 #'
 #' # Fit Cox model
-#' survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR), data = cc.surdata.long, x = TRUE)
+#' survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+#' data = cc.surdata.long, x = TRUE)
 #'
 #' # Fit joint model
-#' res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc, timeVar = "sample.time", deltaVar="delta", weightVar ="weights", CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
+#' res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc,
+#' timeVar = "sample.time", deltaVar="delta", weightVar ="weights",
+#' CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
 #'
 #'  # load example data for Poisson generalized linear mixed-effects model
 #'  data(obs_full_poisson)
@@ -70,10 +76,15 @@
 #'  data(sur_cc_poisson)
 #'  obs_cc_poisson <- obs_full_poisson[obs_full_poisson$subject %in% sur_cc_poisson$subject, ]
 #'
-#'  obsObject.cc <- glmer(obs.value~sample.time+(1+sample.time|subject), data=obs_cc_poisson, family=poisson(link = "log"))
-#'  cc.surdata.long <- crLong(data = sur_cc_poisson, statusVar="event", censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
-#'  survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR), data = cc.surdata.long, x = TRUE)
-#'  res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc, timeVar = "sample.time", deltaVar="delta", weightVar ="weights", CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
+#'  obsObject.cc <- glmer(obs.value~sample.time+(1+sample.time|subject),
+#'  data=obs_cc_poisson, family=poisson(link = "log"))
+#'  cc.surdata.long <- crLong(data = sur_cc_poisson, statusVar="event",
+#'   censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
+#'  survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+#'  data = cc.surdata.long, x = TRUE)
+#'  res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc,
+#'  timeVar = "sample.time", deltaVar="delta", weightVar ="weights",
+#'  CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
 #'
 #' }
 #' @export
