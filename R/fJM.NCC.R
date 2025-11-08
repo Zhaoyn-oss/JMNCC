@@ -42,7 +42,7 @@
 #'
 #' @importFrom stats coef model.frame model.matrix model.response na.pass terms as.formula
 #' @importFrom utils getFromNamespace
-#' @importFrom lme4 fixef findbars getME ranef
+#' @importFrom lme4 fixef findbars getME ranef VarCorr
 #' @importFrom survival coxph survreg Surv
 #' @importFrom JM crLong
 #'

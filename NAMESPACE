@@ -3,6 +3,7 @@
 export(fJM.NCC)
 export(wJM.NCC)
 importFrom(JM,crLong)
+importFrom(lme4,VarCorr)
 importFrom(lme4,findbars)
 importFrom(lme4,fixef)
 importFrom(lme4,getME)
