@@ -22,13 +22,31 @@ wJM.NCC(
 
 \item{timeVar}{Character string for the time variable in the longitudinal data.}
 
-\item{deltaVar}{Character string for the event indicator column in \code{interFact$data}, 0 representing control, k=1, 2... representing competing event k.}
+\item{deltaVar}{Character string for the event indicator column in \code{interFact$data},
+0 representing control, k=1, 2... representing competing event k.}
 
 \item{CompRisk}{Logical, whether to include competing risks (default \code{TRUE}).}
 
 \item{interFact}{List with \code{value} (formula) and \code{data} (data frame) for additional covariates or strata.}
 
-\item{control}{List of control parameters for quadrature points, tolerances, etc.}
+\item{control}{A list of control parameters with the following elements:
+\describe{
+\item{iter.qN}{The number of quasi-Newton iterations. Default is 300.}
+\item{tol}{tolerance value for convergence in the log-likelihood; see \bold{Details}.
+Default is \code{sqrt(.Machine$double.eps)}.}
+\item{parscale}{The \code{parscale} control argument for \code{optim()}.
+It should be a numeric vector of length equal to the number of parameters.
+Default is 0.01 for all parameters.}
+\item{knots}{A numeric vector of the knot positions for the piecewise-constant baseline risk function.}
+\item{ObsTimes.knots}{Logical; if \code{TRUE} (default), the positions of the knots are specified
+based on the observed event times; otherwise, they are based only on the true event times.}
+\item{Q}{The number of internal knots, 4 default.}
+\item{GHk}{The number of Gauss–Hermite quadrature points used to approximate the integrals over the random effects.
+The default is 15 for one-, two-, or three-dimensional integration when \eqn{N < 2000}, and 9 otherwise,
+for the simple Gauss–Hermite rule.}
+\item{GKk}{The number of Gauss–Kronrod points used to approximate the integral involved in the calculation
+of the survival function. Two options are available: 7 (default) or 15.}
+}}
 
 \item{weightsVar}{Character string for subject-level weights column in \code{interFact$data}.}
 }
@@ -56,16 +74,20 @@ data(sur_cc_linear)
 obs_cc_linear <- obs_full_linear[obs_full_linear$subject \%in\% sur_cc_linear$subject, ]
 
 # Convert survival data to long format for competing risks
-cc.surdata.long <- crLong(data = sur_cc_linear, statusVar="event", censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
+cc.surdata.long <- crLong(data = sur_cc_linear, statusVar="event",
+censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
 
 # Fit longitudinal model
 obsObject.cc <- lmer(obs.value~sample.time+(1+sample.time|subject), data=obs_cc_linear)
 
 # Fit Cox model
-survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR), data = cc.surdata.long, x = TRUE)
+survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+data = cc.surdata.long, x = TRUE)
 
 # Fit joint model
-res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc, timeVar = "sample.time", deltaVar="delta", weightVar ="weights", CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
+res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc,
+timeVar = "sample.time", deltaVar="delta", weightVar ="weights",
+CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
 
  # load example data for Poisson generalized linear mixed-effects model
  data(obs_full_poisson)
@@ -73,10 +95,15 @@ res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc, timeVar = "
  data(sur_cc_poisson)
  obs_cc_poisson <- obs_full_poisson[obs_full_poisson$subject \%in\% sur_cc_poisson$subject, ]
 
- obsObject.cc <- glmer(obs.value~sample.time+(1+sample.time|subject), data=obs_cc_poisson, family=poisson(link = "log"))
- cc.surdata.long <- crLong(data = sur_cc_poisson, statusVar="event", censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
- survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR), data = cc.surdata.long, x = TRUE)
- res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc, timeVar = "sample.time", deltaVar="delta", weightVar ="weights", CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
+ obsObject.cc <- glmer(obs.value~sample.time+(1+sample.time|subject),
+ data=obs_cc_poisson, family=poisson(link = "log"))
+ cc.surdata.long <- crLong(data = sur_cc_poisson, statusVar="event",
+  censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
+ survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+ data = cc.surdata.long, x = TRUE)
+ res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc,
+ timeVar = "sample.time", deltaVar="delta", weightVar ="weights",
+ CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = list(Q=4))
 
 }
 }
