@@ -43,6 +43,7 @@
 #' @importFrom utils getFromNamespace
 #' @importFrom lme4 fixef findbars getME ranef
 #' @importFrom survival coxph survreg Surv
+#' @importFrom JM crLong
 #'
 #' @examples
 #' \dontrun{
