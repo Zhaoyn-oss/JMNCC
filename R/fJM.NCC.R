@@ -44,9 +44,6 @@
 #' @importFrom utils getFromNamespace
 #' @importFrom lme4 fixef findbars getME ranef VarCorr
 #' @importFrom survival coxph survreg Surv strata
-#' @importFrom statmod gauss.quad.prob
-#' @importFrom stringr str_detect str_replace str_split str_c
-#' @importFrom JM crLong
 #'
 #' @examples
 #' \dontrun{

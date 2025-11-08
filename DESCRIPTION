@@ -12,6 +12,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends: R (>= 4.2.0)
 Imports:
-    stats,lme4,JM,survival,stats,utils,statmod,stringr
+    stats,lme4,JM,survival,stats,utils
 Suggests:
     knitr, rmarkdown, testthat
