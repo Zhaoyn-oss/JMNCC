@@ -70,15 +70,15 @@ data(obs_full_linear)
 data(sur_full_linear)
 
 # Convert survival data to long format for competing risks
-full.surdata.long <- crLong(data = sur_full_linear, statusVar="event",
+full.surdata.long <- JM::crLong(data = sur_full_linear, statusVar="event",
 censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
 
 # Fit Cox model
-survObject.full <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+survObject.full <- survival::coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
 data = full.surdata.long, x = TRUE)
 
 # Fit longitudinal model
-obsObject.full <- lmer(obs.value~sample.time+(1+sample.time|subject),
+obsObject.full <- lme4::lmer(obs.value~sample.time+(1+sample.time|subject),
 data=obs_full_linear)
 
 # Fit joint model
@@ -91,11 +91,11 @@ interFact = list(value = ~ CR, data = full.surdata.long), control = list(Q=4))
 data(obs_full_poisson)
 data(sur_full_poisson)
 
-obsObject.full <- glmer(obs.value~sample.time+(1+sample.time|subject),
+obsObject.full <- lme4::glmer(obs.value~sample.time+(1+sample.time|subject),
 data=obs_full_poisson, family=poisson(link = "log"))
-full.surdata.long <- crLong(data = sur_full_poisson, statusVar="event",
+full.surdata.long <- JM::crLong(data = sur_full_poisson, statusVar="event",
 censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
-survObject.full <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+survObject.full <- survival::coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
 data = full.surdata.long, x = TRUE)
 res.fjm <- fJM.NCC(obsObject=obsObject.full, survObject=survObject.full,
 timeVar = "sample.time", deltaVar="delta", CompRisk=TRUE,

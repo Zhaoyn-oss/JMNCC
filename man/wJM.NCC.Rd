@@ -74,14 +74,14 @@ data(sur_cc_linear)
 obs_cc_linear <- obs_full_linear[obs_full_linear$subject \%in\% sur_cc_linear$subject, ]
 
 # Convert survival data to long format for competing risks
-cc.surdata.long <- crLong(data = sur_cc_linear, statusVar="event",
+cc.surdata.long <- JM::crLong(data = sur_cc_linear, statusVar="event",
 censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
 
 # Fit longitudinal model
-obsObject.cc <- lmer(obs.value~sample.time+(1+sample.time|subject), data=obs_cc_linear)
+obsObject.cc <- lme4::lmer(obs.value~sample.time+(1+sample.time|subject), data=obs_cc_linear)
 
 # Fit Cox model
-survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+survObject.cc <- survival::coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
 data = cc.surdata.long, x = TRUE)
 
 # Fit joint model
@@ -95,11 +95,11 @@ CompRisk=TRUE,interFact = list(value = ~ CR, data = cc.surdata.long), control = 
  data(sur_cc_poisson)
  obs_cc_poisson <- obs_full_poisson[obs_full_poisson$subject \%in\% sur_cc_poisson$subject, ]
 
- obsObject.cc <- glmer(obs.value~sample.time+(1+sample.time|subject),
+ obsObject.cc <- lme4::glmer(obs.value~sample.time+(1+sample.time|subject),
  data=obs_cc_poisson, family=poisson(link = "log"))
- cc.surdata.long <- crLong(data = sur_cc_poisson, statusVar="event",
+ cc.surdata.long <- JM::crLong(data = sur_cc_poisson, statusVar="event",
   censLevel = 1, nameStrata = "CR", nameStatus = "comp.event")
- survObject.cc <- coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
+ survObject.cc <- survival::coxph(Surv(sur.time, comp.event) ~ gender+strata(CR),
  data = cc.surdata.long, x = TRUE)
  res.wjm <- wJM.NCC(obsObject=obsObject.cc, survObject=survObject.cc,
  timeVar = "sample.time", deltaVar="delta", weightVar ="weights",
